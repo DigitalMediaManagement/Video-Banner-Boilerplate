@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="ad.size" content="width=300,height=600">
+    <title>Campaign Title 300x600</title>
+    <script src="https://s0.2mdn.net/ads/studio/Enabler.js"></script>
+    <script>var clickTag = "";</script>
+
+    <style>
+        @keyframes flash {
+            from {
+                opacity: 0.15
+            }
+
+            to {
+                opacity: 0
+            }
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg)
+            }
+
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        #static {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: none;
+        }
+        #static.visible {
+            opacity: 1;
+            transition: all 0.8s ease;
+        }
+        #static--background{
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #tunein {
+            position: absolute;
+            z-index: 10;
+            width: 300px;
+            bottom: 14px;
+            left: 0;
+            height: 133px;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+
+        #white.animating {
+            -webkit-animation-name: flash;
+            /* Safari 4.0 - 8.0 */
+            -webkit-animation-duration: 1.5s;
+            /* Safari 4.0 - 8.0 */
+            animation-name: flash;
+            animation-duration: 1.5s;
+        }
+
+        #replay {
+            position: absolute;
+            background-image: url("./replay.png");
+            width: 14px;
+            height: 14px;
+            right: 6px;
+            top: 6px;
+            transition: opacity 1.5s;
+            background-position: bottom;
+        }
+
+        #replay.animating {
+            -webkit-animation-name: spin;
+            /* Safari 4.0 - 8.0 */
+            -webkit-animation-duration: 1s;
+            /* Safari 4.0 - 8.0 */
+            animation-name: spin;
+            animation-duration: 1s;
+        }
+
+        #mute {
+            position: absolute;
+            background-image: url("./mute.png");
+            width: 14px;
+            height: 14px;
+            background-position: 0% center;
+            left: 6px;
+            top: 6px;
+            transform: scale(1);
+            transition: transform 0.15s;
+        }
+
+        #mute:hover {
+            transform: scale(1.2);
+        }
+
+        #mute.unmuted {
+            background-position: 14px center;
+        }
+
+        #socials {
+            position: absolute;
+            top: 3px;
+            left: 4px;
+            width: 80px;
+            opacity: 0;
+        }
+
+        #socials.visible {
+            transition: all 0.8s ease;
+            opacity: 1;
+        }
+
+        #socials img {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            opacity: 0.8;
+        }
+
+        #socials img:hover {
+            opacity: 1;
+        }
+
+        .border {
+            display: block;
+            position: absolute;
+            background: #111
+        }
+    </style>
+</head>
+
+<body style="margin:0px;">
+    <div id="animation_container"
+        style="position: relative; background-color:rgba(255, 255, 255, 1.00); width:300px; height:600px; cursor: pointer">
+        <video id="video-player" preload="metadata" playsinline webkit-playsinline muted autoplay>
+            <source src="" type="video/webm">
+            <source src="" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <div id="static">
+            <div id="tunein"></div>
+            <img src="./static-banner.jpg" id="static--background">
+        </div>
+
+        <div id="white"
+            style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0;">
+        </div>
+
+        <div id="mute"></div>
+        <div id="replay"></div>
+
+        <!--
+        <div id="socials">
+            <img src="./facebook.png" id="facebook" data-link="">
+            <img src="./twitter.png" id="twitter" data-link="">
+            <img src="./instagram.png" id="instagram" data-link="">
+        </div>
+        -->
+
+        <div class="border" style="top: 0; left: 0; width: 100%; height: 1px;"></div>
+        <div class="border" style="bottom: 0; left: 0; width: 100%; height: 1px;"></div>
+        <div class="border" style="top: 0; left: 0; height: 100%; width: 1px;"></div>
+        <div class="border" style="top: 0; right: 0; height: 100%; width: 1px;"></div>
+    </div>
+
+<script type="text/javascript">
+    var video, sources, white, replay, mute, static, tunein, socials, socialLinks;
+    var videoPlaying = true;
+    var videoPath = 'https://d1q73h3dycmdwn.cloudfront.net/hbo/legendary/';
+
+    // Set Dates
+    var currentDate = new Date();
+    var tuneInDates = [
+        {
+            start: -Infinity,
+            end: new Date('May 23, 2020'),
+            img: 'tunein-pre.png',
+        },
+        {
+            start: new Date('May 24, 2020'),
+            end: new Date('May 26, 2020'),
+            img: 'tunein-during.png',
+        },
+        {
+            start: new Date('May 27, 2020'),
+            end: Infinity,
+            img: 'tunein-post.png',
+        },
+    ];
+
+    window.onload = function() {
+        if (Enabler.isInitialized()) {
+            enablerInitHandler();
+        } else {
+            Enabler.addEventListener(studio.events.StudioEvent.INIT, enablerInitHandler);
+        }
+    }
+
+    function enablerInitHandler() {
+        video = document.getElementsByTagName("video")[0];
+        sources = video.getElementsByTagName("source");
+        white = document.getElementById("white");
+        replay = document.getElementById("replay");
+        mute = document.getElementById("mute");
+        static = document.getElementById("static");
+        tunein = document.getElementById("tunein");
+        //socials = document.getElementById("socials");
+        //socialLinks = socials.querySelectorAll("#socials img");
+
+        setVisibility();
+        addListeners();
+        loadVideo();
+        loadTunein();
+    }
+
+    function setVisibility() {
+        if (videoPlaying) {
+            white.style.visibility = "hidden";
+            replay.style.visibility = "hidden";
+            replay.style.opacity = 0;
+            static.classList.remove('visible');
+            //socials.classList.remove('visible');
+        } else {
+            white.style.visibility = "visible";
+            replay.style.visibility = "visible";
+            replay.style.opacity = 1;
+            static.classList.add('visible');
+            //socials.classList.add('visible');
+        }
+    }
+
+    function addListeners() {
+        white.addEventListener("click", linkOutHandler, false);
+        video.addEventListener("click", linkOutHandler, false);
+        static.addEventListener("click", linkOutHandler, false);
+        video.addEventListener("ended", videoEndHandler, false);
+        white.addEventListener("mouseover", whiteHoverHandler, false);
+        replay.addEventListener("mouseover", replayHoverHandler, false);
+        replay.addEventListener("click", replayVideo, false);
+        mute.addEventListener("click", muteVideo, false);
+
+        //socialLinks.forEach(function (item) {
+        //    item.addEventListener("click", linkOutSocialHandler, false);
+        //})
+    }
+
+    function loadVideo() {
+        // webm generated with convertio.co
+        sources[0].src = videoPath + 'Shawam_For_Dotcom_300X600_V1.webm';
+        sources[1].src = videoPath + 'Shawam_For_Dotcom_300X600_V1.mp4';
+        video.load();
+        videoPlaying = true;
+    }
+
+    function loadTunein() {
+        var dates = tuneInDates.filter(function (item) {
+            return currentDate > item.start && currentDate < item.end;
+        });
+        var tuneInImg = dates[0].img;
+        tunein.style.backgroundImage = 'url('+tuneInImg+')';
+    }
+
+    function linkOutHandler() {
+        Enabler.exit('Background Exit');
+        window.open(window.clickTag, "_blank");
+    }
+
+    function linkOutSocialHandler() {
+        if (event.target.dataset.link) {
+            window.open(event.target.dataset.link, "_blank");
+        }
+    }
+
+    function videoEndHandler() {
+        Enabler.counter('Video Finish');
+        videoPlaying = false;
+        setVisibility();
+    }
+
+    function whiteHoverHandler() {
+        if (white.classList.contains("animating")) {
+            return;
+        }
+        white.classList.add("animating");
+        white.addEventListener("animationend", function () {
+            white.classList.remove("animating");
+        });
+    }
+
+    function replayHoverHandler() {
+        if (replay.classList.contains("animating")) {
+            return;
+        }
+        Enabler.counter('Replay Hover');
+        replay.classList.add("animating");
+        replay.addEventListener("animationend", function () {
+            replay.classList.remove("animating");
+        });
+    }
+
+    function replayVideo() {
+        Enabler.counter('Replay Video');
+        videoPlaying = true;
+        setVisibility();
+        video.play();
+    }
+
+    function muteVideo() {
+        Enabler.counter('Mute/Unmute Video');
+        video.muted = !video.muted;
+        mute.classList.toggle("unmuted");
+    }
+</script>
+</body>
+</html>
