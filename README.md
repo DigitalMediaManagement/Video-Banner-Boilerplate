@@ -26,8 +26,8 @@
 - The video size isn't added to the export size if served from an external cdn
 
 ## Resources
-https://www.iab.com/guidelines/
-https://www.iab.com/wp-content/uploads/2016/04/HTML5forDigitalAdvertising2.0.pdf
-https://www.iab.com/wp-content/uploads/2015/11/IAB_Display_Mobile_Creative_Guidelines_HTML5_2015.pdf
-https://h5validator.appspot.com/dcm
-https://www.google.com/doubleclick/studio/docs/sdk/html5/en/class_studio_Enabler.html
+- [IAB Guidelines](https://www.iab.com/guidelines/)
+- [IAB Digital Ads PDF](https://www.iab.com/wp-content/uploads/2016/04/HTML5forDigitalAdvertising2.0.pdf)
+- [IAB Mobile Ads PDF](https://www.iab.com/wp-content/uploads/2015/11/IAB_Display_Mobile_Creative_Guidelines_HTML5_2015.pdf)
+- [HTML5 Validator for DFP](https://h5validator.appspot.com/dcm)
+- [Google Studio Enabler](https://www.google.com/doubleclick/studio/docs/sdk/html5/en/class_studio_Enabler.html)
