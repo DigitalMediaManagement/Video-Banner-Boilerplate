@@ -3,20 +3,20 @@
 ## Instructions
 - Convert mp4 file to webm (https://convertio.co/mp4-webm/)
 - Put videos on a CDN. I use s3 + Cloudfront for testing and then ask the client if they have a CDN to host the video on production (because video hosting is pretty costly).
-- Use HTML5 video template
+- Use HTML5 video template. Clone this repo and run `rm -rf .git README.md`.
 - Update banner dimensions in the following places
   - The ad.size meta tag (6)
   - The banner title tag (7)
-  - The #animation_container div inline styles (148)
-- Update video path to cdn path to video files (184)
-- Update dates to change tune-in messaging based on date (188)
-  - If only one tunein is provided, you can change the tune-in loader code in the loadTunein() function (270)
-- Update video file names in the loadVideo() function (262)
+  - The #animation_container div inline styles (183)
+- Update video path to cdn path to video files (222)
+- Update video video files name, excluding the file extension (223)
+- Update dates to change tune-in messaging based on date (228)
+  - If only one tunein is provided, you can change the tune-in loader code in the loadTunein() function (331)
 - If social icons are needed:
-  - uncomment socials in thml (168)
-  - uncomment social vars (222, 223)
-  - uncomment social visibility handlers (237, 243)
-  - uncomment social event listeners (257-259)
+  - uncomment socials in html (204 - 210)
+  - uncomment social vars (262 - 263)
+  - uncomment social visibility handlers (282, 289, 295)
+  - uncomment social event listeners (310 - 312)
 
 ## Things to Remember
 - The file tree needs to remain flat, no folders allowed
