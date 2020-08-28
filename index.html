@@ -215,178 +215,178 @@
         <div class="border" style="top: 0; right: 0; height: 100%; width: 1px;"></div>
     </div>
 
-<script type="text/javascript">
-    var video, sources, white, play, replay, mute, static, tunein, socials, socialLinks;
-    var videoUnplayed = true;
-    var videoPlaying = true;
-    var videoPath = 'https://d1q73h3dycmdwn.cloudfront.net/hbo/legendary/';
-    var videoFileName = "Shawam_For_Dotcom_300X600_V1";
-    var autoplay = true;
+    <script type="text/javascript">
+        var video, sources, white, play, replay, mute, static, tunein, socials, socialLinks;
+        var videoUnplayed = true;
+        var videoPlaying = true;
+        var videoPath = 'https://d1q73h3dycmdwn.cloudfront.net/hbo/legendary/';
+        var videoFileName = "Shawam_For_Dotcom_300X600_V1";
+        var autoplay = true;
 
-    // Set Dates
-    var currentDate = new Date();
-    var tuneInDates = [{
-            start: -Infinity,
-            end: new Date('May 23, 2020'),
-            img: 'tunein-pre.png',
-        },
-        {
-            start: new Date('May 24, 2020'),
-            end: new Date('May 26, 2020'),
-            img: 'tunein-during.png',
-        },
-        {
-            start: new Date('May 27, 2020'),
-            end: Infinity,
-            img: 'tunein-post.png',
-        },
-    ];
+        // Set Dates
+        var currentDate = new Date();
+        var tuneInDates = [{
+                start: -Infinity,
+                end: new Date('May 23, 2020'),
+                img: 'tunein-pre.png',
+            },
+            {
+                start: new Date('May 24, 2020'),
+                end: new Date('May 26, 2020'),
+                img: 'tunein-during.png',
+            },
+            {
+                start: new Date('May 27, 2020'),
+                end: Infinity,
+                img: 'tunein-post.png',
+            },
+        ];
 
-    window.onload = function () {
-        if (Enabler.isInitialized()) {
-            enablerInitHandler();
-        } else {
-            Enabler.addEventListener(studio.events.StudioEvent.INIT, enablerInitHandler);
+        window.onload = function () {
+            if (Enabler.isInitialized()) {
+                enablerInitHandler();
+            } else {
+                Enabler.addEventListener(studio.events.StudioEvent.INIT, enablerInitHandler);
+            }
         }
-    }
 
-    function enablerInitHandler() {
-        video = document.getElementsByTagName("video")[0];
-        sources = video.getElementsByTagName("source");
-        white = document.getElementById("white");
-        replay = document.getElementById("replay");
-        play = document.getElementById("play");
-        mute = document.getElementById("mute");
-        static = document.getElementById("static");
-        tunein = document.getElementById("tunein");
-        //socials = document.getElementById("socials");
-        //socialLinks = socials.querySelectorAll("#socials img");
+        function enablerInitHandler() {
+            video = document.getElementsByTagName("video")[0];
+            sources = video.getElementsByTagName("source");
+            white = document.getElementById("white");
+            replay = document.getElementById("replay");
+            play = document.getElementById("play");
+            mute = document.getElementById("mute");
+            static = document.getElementById("static");
+            tunein = document.getElementById("tunein");
+            //socials = document.getElementById("socials");
+            //socialLinks = socials.querySelectorAll("#socials img");
 
-        setVisibility();
-        addListeners();
-        loadVideo();
-        loadTunein();
+            setVisibility();
+            addListeners();
+            loadVideo();
+            loadTunein();
 
-        if (autoplay) {
-            playVideo();
+            if (autoplay) {
+                playVideo();
+            }
         }
-    }
 
-    function setVisibility() {
-        if (videoUnplayed && !autoplay) {
-            white.style.visibility = "visible";
-            replay.style.visibility = "hidden";
-            replay.style.opacity = 0;
-            static.classList.add("visible");
-            play.classList.add("visible");
-            //socials.classList.remove("visible");
-        } else if (videoPlaying) {
-            white.style.visibility = "hidden";
-            replay.style.visibility = "hidden";
-            replay.style.opacity = 0;
-            static.classList.remove('visible');
-            play.classList.remove("visible");
-            //socials.classList.remove('visible');
-        } else {
-            white.style.visibility = "visible";
-            replay.style.visibility = "visible";
-            replay.style.opacity = 1;
-            static.classList.add('visible');
-            //socials.classList.add('visible');
+        function setVisibility() {
+            if (videoUnplayed && !autoplay) {
+                white.style.visibility = "visible";
+                replay.style.visibility = "hidden";
+                replay.style.opacity = 0;
+                static.classList.add("visible");
+                play.classList.add("visible");
+                //socials.classList.remove("visible");
+            } else if (videoPlaying) {
+                white.style.visibility = "hidden";
+                replay.style.visibility = "hidden";
+                replay.style.opacity = 0;
+                static.classList.remove('visible');
+                play.classList.remove("visible");
+                //socials.classList.remove('visible');
+            } else {
+                white.style.visibility = "visible";
+                replay.style.visibility = "visible";
+                replay.style.opacity = 1;
+                static.classList.add('visible');
+                //socials.classList.add('visible');
+            }
         }
-    }
 
-    function addListeners() {
-        white.addEventListener("click", linkOutHandler, false);
-        video.addEventListener("click", linkOutHandler, false);
-        static.addEventListener("click", linkOutHandler, false);
-        video.addEventListener("ended", videoEndHandler, false);
-        white.addEventListener("mouseover", whiteHoverHandler, false);
-        replay.addEventListener("mouseover", replayHoverHandler, false);
-        replay.addEventListener("click", replayVideo, false);
-        play.addEventListener("click", playVideo, false);
-        mute.addEventListener("click", muteVideo, false);
+        function addListeners() {
+            white.addEventListener("click", linkOutHandler, false);
+            video.addEventListener("click", linkOutHandler, false);
+            static.addEventListener("click", linkOutHandler, false);
+            video.addEventListener("ended", videoEndHandler, false);
+            white.addEventListener("mouseover", whiteHoverHandler, false);
+            replay.addEventListener("mouseover", replayHoverHandler, false);
+            replay.addEventListener("click", replayVideo, false);
+            play.addEventListener("click", playVideo, false);
+            mute.addEventListener("click", muteVideo, false);
 
-        //socialLinks.forEach(function (item) {
-        //    item.addEventListener("click", linkOutSocialHandler, false);
-        //})
-    }
-
-    function loadVideo() {
-        // webm generated with convertio.co
-        sources[0].src = videoPath + videoFileName + '.webm';
-        sources[1].src = videoPath + videoFileName + '.mp4';
-        video.load();
-    }
-
-    function playVideo() {
-        Enabler.counter('Play Video');
-        play.style.visibility = "hidden";
-        videoPlaying = true;
-        videoUnplayed = false;
-        setVisibility();
-        video.play();
-    }
-
-    function loadTunein() {
-        var dates = tuneInDates.filter(function (item) {
-            return currentDate > item.start && currentDate < item.end;
-        });
-        var tuneInImg = dates[0].img;
-        tunein.style.backgroundImage = 'url(' + tuneInImg + ')';
-    }
-
-    function linkOutHandler() {
-        Enabler.exit('Background Exit');
-        window.open(window.clickTag, "_blank");
-    }
-
-    function linkOutSocialHandler() {
-        if (event.target.dataset.link) {
-            window.open(event.target.dataset.link, "_blank");
+            //socialLinks.forEach(function (item) {
+            //    item.addEventListener("click", linkOutSocialHandler, false);
+            //})
         }
-    }
 
-    function videoEndHandler() {
-        Enabler.counter('Video Finish');
-        videoPlaying = false;
-        setVisibility();
-    }
-
-    function whiteHoverHandler() {
-        if (white.classList.contains("animating")) {
-            return;
+        function loadVideo() {
+            // webm generated with convertio.co
+            sources[0].src = videoPath + videoFileName + '.webm';
+            sources[1].src = videoPath + videoFileName + '.mp4';
+            video.load();
         }
-        white.classList.add("animating");
-        white.addEventListener("animationend", function () {
-            white.classList.remove("animating");
-        });
-    }
 
-    function replayHoverHandler() {
-        if (replay.classList.contains("animating")) {
-            return;
+        function playVideo() {
+            Enabler.counter('Play Video');
+            play.style.visibility = "hidden";
+            videoPlaying = true;
+            videoUnplayed = false;
+            setVisibility();
+            video.play();
         }
-        Enabler.counter('Replay Hover');
-        replay.classList.add("animating");
-        replay.addEventListener("animationend", function () {
-            replay.classList.remove("animating");
-        });
-    }
 
-    function replayVideo() {
-        Enabler.counter('Replay Video');
-        videoPlaying = true;
-        setVisibility();
-        video.play();
-    }
+        function loadTunein() {
+            var dates = tuneInDates.filter(function (item) {
+                return currentDate > item.start && currentDate < item.end;
+            });
+            var tuneInImg = dates[0].img;
+            tunein.style.backgroundImage = 'url(' + tuneInImg + ')';
+        }
 
-    function muteVideo() {
-        Enabler.counter('Mute/Unmute Video');
-        video.muted = !video.muted;
-        mute.classList.toggle("unmuted");
-    }
-</script>
+        function linkOutHandler() {
+            Enabler.exit('Background Exit');
+            window.open(window.clickTag, "_blank");
+        }
+
+        function linkOutSocialHandler() {
+            if (event.target.dataset.link) {
+                window.open(event.target.dataset.link, "_blank");
+            }
+        }
+
+        function videoEndHandler() {
+            Enabler.counter('Video Finish');
+            videoPlaying = false;
+            setVisibility();
+        }
+
+        function whiteHoverHandler() {
+            if (white.classList.contains("animating")) {
+                return;
+            }
+            white.classList.add("animating");
+            white.addEventListener("animationend", function () {
+                white.classList.remove("animating");
+            });
+        }
+
+        function replayHoverHandler() {
+            if (replay.classList.contains("animating")) {
+                return;
+            }
+            Enabler.counter('Replay Hover');
+            replay.classList.add("animating");
+            replay.addEventListener("animationend", function () {
+                replay.classList.remove("animating");
+            });
+        }
+
+        function replayVideo() {
+            Enabler.counter('Replay Video');
+            videoPlaying = true;
+            setVisibility();
+            video.play();
+        }
+
+        function muteVideo() {
+            Enabler.counter('Mute/Unmute Video');
+            video.muted = !video.muted;
+            mute.classList.toggle("unmuted");
+        }
+    </script>
 </body>
 
 </html>
