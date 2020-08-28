@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <meta name="ad.size" content="width=300,height=600">
     <title>Campaign Title 300x600</title>
+
     <script src="https://s0.2mdn.net/ads/studio/Enabler.js"></script>
-    <script>var clickTag = "";</script>
+    <script>
+        var clickTag = "";
+    </script>
 
     <style>
         @keyframes flash {
@@ -38,11 +41,13 @@
             opacity: 0;
             transition: none;
         }
+
         #static.visible {
             opacity: 1;
             transition: all 0.8s ease;
         }
-        #static--background{
+
+        #static--background {
             display: block;
             position: absolute;
             top: 0;
@@ -50,6 +55,7 @@
             width: 100%;
             height: 100%;
         }
+
         #tunein {
             position: absolute;
             z-index: 10;
@@ -69,6 +75,36 @@
             /* Safari 4.0 - 8.0 */
             animation-name: flash;
             animation-duration: 1.5s;
+        }
+
+        #play {
+            position: absolute;
+            background-color: #000;
+            background-color: rgba(0, 0, 0, 0.25);
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            transition: all 0.2s;
+            opacity: 0;
+        }
+
+        #play.visible {
+            opacity: 1;
+        }
+
+        #play:hover {
+            background-color: rgba(0, 0, 0, 0.45);
+        }
+
+        #play img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            margin-left: -15px;
+            margin-top: -15px;
         }
 
         #replay {
@@ -146,7 +182,7 @@
 <body style="margin:0px;">
     <div id="animation_container"
         style="position: relative; background-color:rgba(255, 255, 255, 1.00); width:300px; height:600px; cursor: pointer">
-        <video id="video-player" preload="metadata" playsinline webkit-playsinline muted autoplay>
+        <video id="video-player" preload="metadata" playsinline webkit-playsinline muted>
             <source src="" type="video/webm">
             <source src="" type="video/mp4">
             Your browser does not support the video tag.
@@ -161,6 +197,7 @@
             style="display: block; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #fff; opacity: 0;">
         </div>
 
+        <div id="play"><img src="play.png" alt="play"></div>
         <div id="mute"></div>
         <div id="replay"></div>
 
@@ -179,14 +216,16 @@
     </div>
 
 <script type="text/javascript">
-    var video, sources, white, replay, mute, static, tunein, socials, socialLinks;
+    var video, sources, white, play, replay, mute, static, tunein, socials, socialLinks;
+    var videoUnplayed = true;
     var videoPlaying = true;
     var videoPath = 'https://d1q73h3dycmdwn.cloudfront.net/hbo/legendary/';
+    var videoFileName = "Shawam_For_Dotcom_300X600_V1";
+    var autoplay = true;
 
     // Set Dates
     var currentDate = new Date();
-    var tuneInDates = [
-        {
+    var tuneInDates = [{
             start: -Infinity,
             end: new Date('May 23, 2020'),
             img: 'tunein-pre.png',
@@ -203,7 +242,7 @@
         },
     ];
 
-    window.onload = function() {
+    window.onload = function () {
         if (Enabler.isInitialized()) {
             enablerInitHandler();
         } else {
@@ -216,6 +255,7 @@
         sources = video.getElementsByTagName("source");
         white = document.getElementById("white");
         replay = document.getElementById("replay");
+        play = document.getElementById("play");
         mute = document.getElementById("mute");
         static = document.getElementById("static");
         tunein = document.getElementById("tunein");
@@ -226,14 +266,26 @@
         addListeners();
         loadVideo();
         loadTunein();
+
+        if (autoplay) {
+            playVideo();
+        }
     }
 
     function setVisibility() {
-        if (videoPlaying) {
+        if (videoUnplayed && !autoplay) {
+            white.style.visibility = "visible";
+            replay.style.visibility = "hidden";
+            replay.style.opacity = 0;
+            static.classList.add("visible");
+            play.classList.add("visible");
+            //socials.classList.remove("visible");
+        } else if (videoPlaying) {
             white.style.visibility = "hidden";
             replay.style.visibility = "hidden";
             replay.style.opacity = 0;
             static.classList.remove('visible');
+            play.classList.remove("visible");
             //socials.classList.remove('visible');
         } else {
             white.style.visibility = "visible";
@@ -252,6 +304,7 @@
         white.addEventListener("mouseover", whiteHoverHandler, false);
         replay.addEventListener("mouseover", replayHoverHandler, false);
         replay.addEventListener("click", replayVideo, false);
+        play.addEventListener("click", playVideo, false);
         mute.addEventListener("click", muteVideo, false);
 
         //socialLinks.forEach(function (item) {
@@ -261,10 +314,18 @@
 
     function loadVideo() {
         // webm generated with convertio.co
-        sources[0].src = videoPath + 'Shawam_For_Dotcom_300X600_V1.webm';
-        sources[1].src = videoPath + 'Shawam_For_Dotcom_300X600_V1.mp4';
+        sources[0].src = videoPath + videoFileName + '.webm';
+        sources[1].src = videoPath + videoFileName + '.mp4';
         video.load();
+    }
+
+    function playVideo() {
+        Enabler.counter('Play Video');
+        play.style.visibility = "hidden";
         videoPlaying = true;
+        videoUnplayed = false;
+        setVisibility();
+        video.play();
     }
 
     function loadTunein() {
@@ -272,7 +333,7 @@
             return currentDate > item.start && currentDate < item.end;
         });
         var tuneInImg = dates[0].img;
-        tunein.style.backgroundImage = 'url('+tuneInImg+')';
+        tunein.style.backgroundImage = 'url(' + tuneInImg + ')';
     }
 
     function linkOutHandler() {
@@ -327,4 +388,5 @@
     }
 </script>
 </body>
+
 </html>
